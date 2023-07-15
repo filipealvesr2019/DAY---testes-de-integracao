@@ -1,8 +1,11 @@
 const bodyParser = require("body-parser");
 const PostController = require("./controllers/post");
+const { logger } = require("./middlewares/logger");
 const app = require("express")();
 
 app.use(bodyParser.json());
+
+app.use(logger);
 
 app.get("/posts", (req, res) => {
   const response = PostController.getPost();
@@ -12,7 +15,7 @@ app.get("/posts", (req, res) => {
 app.get("/posts/:id", (req, res) => {
   try {
     const { id } = req.params;
-    const response = PostController.getPost(parseInt(id));
+    const response = PostController.getPost(id);
     if (!response) return res.status(404).json({ msg: "Post not found" });
     res.json(response);
   } catch (err) {
@@ -24,7 +27,7 @@ app.get("/posts/:id", (req, res) => {
 
 app.post("/posts", (req, res) => {
   try {
-  const { title, content } = req.body;
+    const { title, content } = req.body;
     const response = PostController.addPost(title, content);
     res.status(201).json(response);
   } catch (err) {
@@ -36,7 +39,7 @@ app.put("/posts/:id", (req, res) => {
   try {
     const { id } = req.params;
     const { title, content } = req.body;
-    const response = PostController.updatePost(parseInt(id), title, content);
+    const response = PostController.updatePost(id, title, content);
     if (!response) return res.status(404).json({ msg: "Post not found" });
     res.json(response);
   } catch (err) {
