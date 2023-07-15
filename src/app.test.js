@@ -3,17 +3,17 @@ const app = require('./app');
 
 const END_POINT = 'http://localhost:3000';
 
-describe('App Test', () => {
-    let currentPostId = 0;
-    let postsIdToDelete = [];
+let currentPostId = 0;
+let postsIdToDelete = [];
 
+describe('POST /posts', () => {
     afterEach(async () => {
         for (const post of postsIdToDelete)
             await request(app)
                 .delete(`/posts/${post}`)
     })
 
-    it('valida a criação de um novo post e o retorno dele na listagem de todos os posts', async () => {
+    it('Testa a criação de um novo post e o retorno dele na listagem de todos os posts', async () => {
         await request(app)
             .get('/posts').expect((res) => {
                 expect(res.status).toBe(200);
@@ -37,7 +37,16 @@ describe('App Test', () => {
         currentPostId = 1;
     });
 
-    it('valida a atualização do título e conteúdo de um post e apenas daquele post', async () => {
+    it('Testa a atualização de um post com o id inválido', async () => {
+        await request(app).put('/posts/oi').send({ title: "Teste titulo", content: "texto" }).expect((res) => {
+            expect(res.status).toBe(400);
+            expect(res.body).toStrictEqual({ msg: 'Input Invalid' })
+        })
+    });
+});
+
+describe('Testes PUT /posts/:id', () => {
+    it('Testa a atualização do título e conteúdo de um post e apenas daquele post', async () => {
         const oldPost = { id: currentPostId, title: 'Test title', content: 'Test content' };
         const newPost = { title: 'Test title 2', content: 'Test content 2' }
 
@@ -71,8 +80,10 @@ describe('App Test', () => {
                 expect(res.body[1]).toStrictEqual({ id: currentPostId, ...updatedPost });
             });
     });
+});
 
-    it('valida se os posts que retornam na rota GET /posts retornam também individualmente pelo seu id na rota GET /posts/:id', async () => {
+describe('Testes GET /posts e /posts/:id', () => {
+    it('Testa se os posts que retornam na rota GET /posts retornam também individualmente pelo seu id na rota GET /posts/:id', async () => {
         const { body } = await request(app)
             .get('/posts');
 
@@ -87,3 +98,13 @@ describe('App Test', () => {
         }
     });
 });
+
+describe('Testes middleware', () => {
+    it('Testa o middleware logger', async () => {
+        const loggerSpyOn = jest.spyOn(console, 'log');
+        const { body } = await request(app)
+            .get('/posts');
+
+        expect(loggerSpyOn).toBeCalledWith(expect.any(String));
+    });
+})
