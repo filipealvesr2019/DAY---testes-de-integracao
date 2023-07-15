@@ -18,7 +18,7 @@ const updatePost = (id, title, content) => {
 };
 
 const deletePost = (id) => {
-  Validation.idValidation(id);
+  Validation.deletePostValidation(id);
   return PostModel.deletePost(id);
 };
 

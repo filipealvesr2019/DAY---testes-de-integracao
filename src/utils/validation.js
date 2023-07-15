@@ -14,11 +14,16 @@ const addPostValidation = (title, content) => {
 
 const updatePostValidation = (id, title, content) => {
   idValidation(id);
-  if (!title && !content) throw Error("Input Invalid");
+  if (!id || (!title && !content)) throw Error("Input Invalid");
   if (title && (typeof title !== "string" || title === ""))
     throw Error("Input Invalid");
   if (content && (typeof content !== "string" || content === ""))
     throw Error("Input Invalid");
 };
 
-module.exports = { idValidation, addPostValidation, updatePostValidation };
+const deletePostValidation = (id) => {
+  if(!id) throw Error("Input Invalid");
+  idValidation();
+}
+
+module.exports = { idValidation, addPostValidation, updatePostValidation, deletePostValidation };

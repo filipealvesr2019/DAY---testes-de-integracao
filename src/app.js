@@ -50,7 +50,7 @@ app.put("/posts/:id", (req, res) => {
 app.delete("/posts/:id", (req, res) => {
   try {
     const { id } = req.params;
-    const response = PostController.deletePost(parseInt(id));
+    const response = PostController.deletePost(id);
     if (!response) return res.status(404).json({ msg: "Post not found" });
     res.status(204).json();
   } catch (err) {
