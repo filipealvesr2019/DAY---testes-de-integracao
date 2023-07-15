@@ -4,7 +4,7 @@ const PostModel = require("../models/post");
 const getPost = (id) => {
   Validation.idValidation(id);
   if (!id) return PostModel.getAllPosts();
-  return PostModel.getPostById(id);
+  return PostModel.getPostById(parseInt(id));
 };
 
 const addPost = (title, content) => {
@@ -14,7 +14,7 @@ const addPost = (title, content) => {
 
 const updatePost = (id, title, content) => {
   Validation.updatePostValidation(id, title, content);
-  return PostModel.updatePost(id, title, content);
+  return PostModel.updatePost(parseInt(id), title, content);
 };
 
 const deletePost = (id) => {
